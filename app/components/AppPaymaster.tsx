@@ -25,10 +25,11 @@ export function AppPaymaster() {
             ],
             capabilities: {
               paymasterService: {
-                url: `${document.location.origin}/api/paymaster`,
-                context: {
-                  sponsor: sponsor === '' ? 'Smart Wallet Playground' : sponsor,
-                },
+                url: `${document.location.origin}/api/paymaster/${encodeURIComponent(sponsor === '' ? 'Smart Wallet Playground' : sponsor)}`,
+                // TODO: Smart Wallet does not currently respect / pass along context.
+                // context: {
+                //   sponsor: sponsor === '' ? 'Smart Wallet Playground' : sponsor,
+                // },
               },
             },
           },
