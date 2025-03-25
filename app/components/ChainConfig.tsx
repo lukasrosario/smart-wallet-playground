@@ -41,7 +41,7 @@ export function ChainConfig() {
           <button
             key={chainId}
             onClick={() => switchChain(chainId)}
-            className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors"
+            className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors cursor-pointer"
           >
             {name}
           </button>
@@ -60,7 +60,7 @@ export function ChainConfig() {
           />
           <button
             onClick={() => chainId && switchChain(chainId)}
-            className="px-4 py-1 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors"
+            className="px-4 py-1 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors cursor-pointer"
           >
             Switch
           </button>

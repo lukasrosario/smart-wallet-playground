@@ -63,13 +63,13 @@ export function ConnectWallet() {
       <div className="flex flex-row space-x-4 self-center">
         <button
           onClick={connect}
-          className="w-36 py-2 bg-slate-800 text-white rounded-md border border-slate-600 hover:bg-slate-700"
+          className="w-36 py-2 bg-slate-800 text-white rounded-md border border-slate-600 hover:bg-slate-700 cursor-pointer"
         >
           Connect
         </button>
         <button
           onClick={disconnect}
-          className="w-36 py-2 bg-slate-800 text-white rounded-md border border-slate-600 hover:bg-slate-700"
+          className="w-36 py-2 bg-slate-800 text-white rounded-md border border-slate-600 hover:bg-slate-700 cursor-pointer"
         >
           Disconnect
         </button>

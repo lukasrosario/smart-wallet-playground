@@ -8,6 +8,7 @@ type WalletContextType = {
   provider: ProviderInterface | undefined;
   eventLogs: EventLog[];
   addLog: (log: Omit<EventLog, 'timestamp'>) => void;
+  clearLogs: () => void;
   currentChain: string | undefined;
 };
 
@@ -19,10 +20,12 @@ type WalletProviderProps = {
 
 export function WalletProvider({ children }: WalletProviderProps) {
   const { appName, appLogoUrl, keysUrl } = useConfig();
-  const { provider, eventLogs, addLog, currentChain } = useProvider({ appName, appLogoUrl, keysUrl });
+  const { provider, eventLogs, addLog, clearLogs, currentChain } = useProvider({ appName, appLogoUrl, keysUrl });
 
   return (
-    <WalletContext.Provider value={{ provider, eventLogs, addLog, currentChain }}>{children}</WalletContext.Provider>
+    <WalletContext.Provider value={{ provider, eventLogs, addLog, clearLogs, currentChain }}>
+      {children}
+    </WalletContext.Provider>
   );
 }
 

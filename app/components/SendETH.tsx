@@ -55,7 +55,7 @@ export function SendETH() {
           <div className="grid grid-cols-3 gap-2 mb-2">
             <button
               onClick={() => setToAddress(VITALIK_ADDRESS)}
-              className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors text-sm"
+              className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors text-sm cursor-pointer"
             >
               vitalik.eth
             </button>
@@ -76,7 +76,7 @@ export function SendETH() {
               <button
                 key={value}
                 onClick={() => setAmount(value)}
-                className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors text-sm"
+                className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors text-sm cursor-pointer"
               >
                 {label}
               </button>
@@ -94,7 +94,7 @@ export function SendETH() {
         <button
           onClick={sendETH}
           disabled={!amount || !currentChain}
-          className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           Send ETH
         </button>

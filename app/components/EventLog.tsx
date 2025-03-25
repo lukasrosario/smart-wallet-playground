@@ -33,7 +33,7 @@ function formatEventData(data: unknown): string {
 }
 
 export function EventLog() {
-  const { eventLogs } = useWallet();
+  const { eventLogs, clearLogs } = useWallet();
   const [isExpanded, setIsExpanded] = useState(true);
   const terminalRef = useRef<HTMLDivElement>(null);
 
@@ -45,13 +45,21 @@ export function EventLog() {
 
   return (
     <div className="flex flex-col bg-slate-900 rounded-md overflow-hidden">
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full bg-slate-800 border-b border-slate-700 py-4 flex items-center justify-between px-4 hover:bg-slate-700 transition-colors cursor-pointer"
-      >
-        <h2 className="text-white text-lg font-sans">Event Log</h2>
-        <span className="text-white text-lg">{isExpanded ? '▼' : '▶'}</span>
-      </button>
+      <div className="w-full bg-slate-800 border-b border-slate-700 py-4 flex items-center justify-between px-4">
+        <div
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex items-center space-x-4 flex-grow cursor-pointer hover:opacity-80 transition-opacity"
+        >
+          <h2 className="text-white text-lg font-sans">Event Log</h2>
+          <span className="text-white text-lg">{isExpanded ? '▼' : '▶'}</span>
+        </div>
+        <button
+          onClick={clearLogs}
+          className="px-3 py-1 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors text-sm cursor-pointer"
+        >
+          Clear
+        </button>
+      </div>
       <div className={`transition-all duration-200 ${isExpanded ? 'h-[400px]' : 'h-0'}`}>
         <div className="h-full overflow-auto p-4 font-mono text-sm" ref={terminalRef}>
           <div className="flex flex-col space-y-2">

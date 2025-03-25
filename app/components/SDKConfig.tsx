@@ -38,7 +38,7 @@ export function SDKConfig() {
             <button
               key={url}
               onClick={() => setKeysUrl(url)}
-              className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors text-sm"
+              className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors text-sm cursor-pointer"
             >
               {label}
             </button>

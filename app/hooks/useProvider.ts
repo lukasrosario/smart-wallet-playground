@@ -31,6 +31,10 @@ export function useProvider({ appName, appLogoUrl, keysUrl }: UseProviderProps =
     setEventLogs((prev) => [...prev, { ...log, timestamp: Date.now() }]);
   }, []);
 
+  const clearLogs = useCallback(() => {
+    setEventLogs([]);
+  }, []);
+
   useEffect(() => {
     const sdk = createCoinbaseWalletSDK({
       preference: {
@@ -78,5 +82,5 @@ export function useProvider({ appName, appLogoUrl, keysUrl }: UseProviderProps =
     };
   }, [appName, appLogoUrl, keysUrl, addLog]);
 
-  return { provider, eventLogs, addLog, currentChain };
+  return { provider, eventLogs, addLog, clearLogs, currentChain };
 }
