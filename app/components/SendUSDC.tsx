@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWallet } from '../context/WalletContext';
 import { encodeFunctionData, erc20Abi, isAddress, parseUnits } from 'viem';
 import { Switch } from './Switch';
@@ -29,6 +29,15 @@ export function SendUSDC() {
   const currentChainUSDC = currentChain
     ? CHAIN_TO_USDC_ADDRESS[currentChain as keyof typeof CHAIN_TO_USDC_ADDRESS]
     : undefined;
+
+  useEffect(() => {
+    // USDC sends are always sponsored on Base
+    if (currentChain === '0x2105') {
+      setIsSponsored(true);
+    } else {
+      setIsSponsored(false);
+    }
+  }, [currentChain]);
 
   const isDisabled = useMemo(() => {
     if (!amount) return true;
@@ -127,6 +136,7 @@ export function SendUSDC() {
                   type="checkbox"
                   checked={isSponsored}
                   onChange={(e) => setIsSponsored(e.target.checked)}
+                  disabled={currentChain === '0x2105'}
                   className="rounded bg-slate-700 border-slate-600 text-blue-600 focus:ring-blue-600 focus:ring-offset-0"
                 />
                 <span className="text-white text-sm">Sponsored</span>
