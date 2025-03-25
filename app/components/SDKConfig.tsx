@@ -9,7 +9,7 @@ export function SDKConfig() {
   const { appName, appLogoUrl, keysUrl, setAppName, setAppLogoUrl, setKeysUrl } = useConfig();
 
   return (
-    <div className="flex flex-col bg-slate-800 rounded-md p-4">
+    <div className="flex flex-col bg-slate-800 rounded-md p-4 justify-between">
       <h2 className="text-white mb-2 self-center">SDK Config</h2>
       <label className="flex flex-col text-white text-sm mb-1">
         App Name

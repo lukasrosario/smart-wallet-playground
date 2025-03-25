@@ -46,7 +46,7 @@ export function SendETH() {
   }, [amount, provider, toAddress, currentChain, addLog]);
 
   return (
-    <div className="flex flex-col bg-slate-800 rounded-md p-4">
+    <div className="flex flex-col bg-slate-800 rounded-md p-4 justify-between">
       <h2 className="text-white mb-2 self-center">ETH Send</h2>
 
       <div className="flex flex-col space-y-4">

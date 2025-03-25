@@ -33,7 +33,7 @@ export function ChainConfig() {
   );
 
   return (
-    <div className="flex flex-col bg-slate-800 rounded-md p-4">
+    <div className="flex flex-col bg-slate-800 rounded-md p-4 justify-between">
       <h2 className="text-white mb-2 self-center">Chain Config</h2>
 
       <div className="grid grid-cols-3 gap-2 mb-4">
