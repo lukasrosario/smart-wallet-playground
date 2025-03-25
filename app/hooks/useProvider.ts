@@ -26,6 +26,7 @@ export function useProvider({ appName, appLogoUrl, keysUrl }: UseProviderProps =
   const [provider, setProvider] = useState<ProviderInterface | undefined>(undefined);
   const [eventLogs, setEventLogs] = useState<EventLog[]>([]);
   const [currentChain, setCurrentChain] = useState<string | undefined>(undefined);
+  const [connectedAddress, setConnectedAddress] = useState<string | undefined>(undefined);
 
   const addLog = useCallback((log: Omit<EventLog, 'timestamp'>) => {
     setEventLogs((prev) => [...prev, { ...log, timestamp: Date.now() }]);
@@ -56,6 +57,7 @@ export function useProvider({ appName, appLogoUrl, keysUrl }: UseProviderProps =
 
       provider.on('disconnect', (error: DisconnectError) => {
         setCurrentChain(undefined);
+        setConnectedAddress(undefined);
         addLog({
           type: 'disconnect',
           data: { code: error.code, message: error.message },
@@ -63,6 +65,7 @@ export function useProvider({ appName, appLogoUrl, keysUrl }: UseProviderProps =
       });
 
       provider.on('accountsChanged', (accounts: string[]) => {
+        setConnectedAddress(accounts[0]);
         addLog({ type: 'accountsChanged', data: accounts });
       });
 
@@ -82,5 +85,5 @@ export function useProvider({ appName, appLogoUrl, keysUrl }: UseProviderProps =
     };
   }, [appName, appLogoUrl, keysUrl, addLog]);
 
-  return { provider, eventLogs, addLog, clearLogs, currentChain };
+  return { provider, eventLogs, addLog, clearLogs, currentChain, connectedAddress, setConnectedAddress };
 }

@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useWallet } from '../context/WalletContext';
 
 export function ConnectWallet() {
-  const { provider, addLog } = useWallet();
-  const [connectedAddress, setConnectedAddress] = useState<`0x${string}` | undefined>(undefined);
+  const { provider, addLog, connectedAddress, setConnectedAddress } = useWallet();
   const [currentChain, setCurrentChain] = useState<string | undefined>(undefined);
 
   const updateChainId = useCallback(async () => {
