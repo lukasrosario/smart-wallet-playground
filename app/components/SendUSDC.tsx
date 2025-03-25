@@ -52,7 +52,7 @@ export function SendUSDC() {
 
   return (
     <div className="flex flex-col bg-slate-800 rounded-md p-4 justify-between">
-      <h2 className="text-white mb-2 self-center">Simple USDC Send</h2>
+      <h2 className="text-white mb-2 self-center">Simple USDC Send (on Base)</h2>
 
       <div className="flex flex-col space-y-4">
         <div className="flex flex-col space-y-2">
