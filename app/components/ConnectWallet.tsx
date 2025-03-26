@@ -55,7 +55,7 @@ export function ConnectWallet() {
         data: error,
       });
     }
-  }, [provider, addLog]);
+  }, [provider, setConnectedAddress, addLog]);
 
   return (
     <>
@@ -79,7 +79,9 @@ export function ConnectWallet() {
           {connectedAddress && (
             <>
               <h2 className="text-white text-sm font-medium">Connected Address</h2>
-              <p className="text-white text-center font-mono">{connectedAddress}</p>
+              <p id="connected-address" className="text-white text-center font-mono">
+                {connectedAddress}
+              </p>
               {currentChain && (
                 <div className="flex justify-center w-full">
                   <div className="inline-flex space-x-2 text-sm font-mono">
