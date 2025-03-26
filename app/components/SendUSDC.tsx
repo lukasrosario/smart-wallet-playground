@@ -12,7 +12,6 @@ const AMOUNT_SHORTCUTS = {
 } as const;
 
 const CHAIN_TO_USDC_ADDRESS = {
-  '0x1': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // Mainnet
   '0xa': '0x0b2c639c533813f4aa9d7837caf62653d097ff85', // Optimism
   '0x2105': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // Base
   '0xaa36a7': '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', // Sepolia

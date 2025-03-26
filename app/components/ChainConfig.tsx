@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 import { useWallet } from '../context/WalletContext';
 
 const CHAIN_SHORTCUTS = {
-  Ethereum: '0x1',
   Optimism: '0xa',
   Base: '0x2105',
   Sepolia: '0xaa36a7',
