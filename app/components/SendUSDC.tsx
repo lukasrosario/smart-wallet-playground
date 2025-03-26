@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useWallet } from '../context/WalletContext';
 import { encodeFunctionData, erc20Abi, isAddress, parseUnits } from 'viem';
 import { Switch } from './Switch';
@@ -18,16 +18,19 @@ const CHAIN_TO_USDC_ADDRESS = {
   '0x14a34': '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // Base Sepolia
 } as const;
 
+const CHAIN_NAMES = {
+  '0xa': 'Optimism',
+  '0x2105': 'Base',
+  '0xaa36a7': 'Sepolia',
+  '0x14a34': 'Base Sepolia',
+} as const;
+
 export function SendUSDC() {
   const { provider, addLog, currentChain, connectedAddress } = useWallet();
   const [toAddress, setToAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const [useSendCalls, setUseSendCalls] = useState(true);
   const [isSponsored, setIsSponsored] = useState(false);
-
-  const currentChainUSDC = currentChain
-    ? CHAIN_TO_USDC_ADDRESS[currentChain as keyof typeof CHAIN_TO_USDC_ADDRESS]
-    : undefined;
 
   useEffect(() => {
     // USDC sends are always sponsored on Base
@@ -38,97 +41,75 @@ export function SendUSDC() {
     }
   }, [currentChain]);
 
-  const isDisabled = useMemo(() => {
-    if (!amount) return true;
-    if (!toAddress || !isAddress(toAddress)) return true;
-    if (!currentChain || !currentChainUSDC) return true;
-    if (!connectedAddress && !useSendCalls) return true;
-    return false;
-  }, [amount, toAddress, currentChain, currentChainUSDC, connectedAddress, useSendCalls]);
+  const isDisabled = !amount || !toAddress || !isAddress(toAddress) || (!connectedAddress && !useSendCalls);
 
-  const sendUSDC = useCallback(async () => {
-    if (isDisabled) return;
+  const sendUSDC = useCallback(
+    async (chainId: keyof typeof CHAIN_TO_USDC_ADDRESS) => {
+      if (isDisabled) return;
 
-    try {
-      if (useSendCalls) {
-        await provider?.request({
-          method: 'wallet_sendCalls',
-          params: [
-            {
-              version: '1.0',
-              chainId: currentChain,
-              sponsored: isSponsored,
-              calls: [
-                {
-                  to: currentChainUSDC,
-                  data: encodeFunctionData({
-                    abi: erc20Abi,
-                    functionName: 'transfer',
-                    args: [toAddress as `0x${string}`, parseUnits(amount, 6)],
-                  }),
-                },
-              ],
-              capabilities: {
-                ...(isSponsored
-                  ? {
-                      paymasterService: {
-                        url: `${document.location.origin}/api/paymaster/${encodeURIComponent('Playground')}`,
-                      },
-                    }
-                  : {}),
+      const usdcAddress = CHAIN_TO_USDC_ADDRESS[chainId];
+
+      try {
+        if (useSendCalls) {
+          await provider?.request({
+            method: 'wallet_sendCalls',
+            params: [
+              {
+                version: '1.0',
+                chainId,
+                sponsored: isSponsored,
+                calls: [
+                  {
+                    to: usdcAddress,
+                    data: encodeFunctionData({
+                      abi: erc20Abi,
+                      functionName: 'transfer',
+                      args: [toAddress, parseUnits(amount, 6)],
+                    }),
+                  },
+                ],
               },
-            },
-          ],
-        });
-      } else {
-        const data = encodeFunctionData({
-          abi: erc20Abi,
-          functionName: 'transfer',
-          args: [toAddress as `0x${string}`, parseUnits(amount, 6)],
-        });
+            ],
+          });
+        } else {
+          const data = encodeFunctionData({
+            abi: erc20Abi,
+            functionName: 'transfer',
+            args: [toAddress, parseUnits(amount, 6)],
+          });
 
-        await provider?.request({
-          method: 'eth_sendTransaction',
-          params: [
-            {
-              to: currentChainUSDC,
-              from: connectedAddress,
-              data,
-            },
-          ],
+          await provider?.request({
+            method: 'eth_sendTransaction',
+            params: [
+              {
+                to: usdcAddress,
+                data,
+              },
+            ],
+          });
+        }
+      } catch (error) {
+        addLog({
+          type: 'error',
+          data: error,
         });
       }
-    } catch (error) {
-      addLog({
-        type: 'error',
-        data: error,
-      });
-    }
-  }, [
-    isDisabled,
-    useSendCalls,
-    provider,
-    currentChain,
-    isSponsored,
-    currentChainUSDC,
-    toAddress,
-    amount,
-    connectedAddress,
-    addLog,
-  ]);
+    },
+    [isDisabled, useSendCalls, provider, isSponsored, toAddress, amount, addLog],
+  );
 
   return (
     <div className="flex flex-col bg-slate-800 rounded-md p-4 justify-between">
       <div className="flex flex-col space-y-4">
         <h2 className="text-white self-center">USDC Send</h2>
-        <div className="flex flex-col space-y-2 h-12 items-center mt-2">
+        <div className="flex flex-col items-center space-y-2">
           <Switch
             checked={useSendCalls}
             onChange={setUseSendCalls}
             leftLabel="eth_sendTransaction"
             rightLabel="wallet_sendCalls"
           />
-          <div>
+          <div className="h-1">
             {useSendCalls && (
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input
@@ -185,13 +166,18 @@ export function SendUSDC() {
           />
         </div>
 
-        <button
-          onClick={sendUSDC}
-          disabled={isDisabled}
-          className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-        >
-          {isDisabled ? 'Choose a chain from shortcuts' : 'Send USDC'}
-        </button>
+        <div className="grid grid-cols-2 gap-2">
+          {Object.entries(CHAIN_NAMES).map(([chainId, name]) => (
+            <button
+              key={chainId}
+              onClick={() => sendUSDC(chainId as keyof typeof CHAIN_TO_USDC_ADDRESS)}
+              disabled={isDisabled}
+              className="py-2 px-4 bg-slate-700 text-white rounded-md border border-slate-600 hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              Send on {name}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
