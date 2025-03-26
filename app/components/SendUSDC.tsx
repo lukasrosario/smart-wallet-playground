@@ -208,6 +208,7 @@ export function SendUSDC() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 text-sm font-mono"
+              data-testid="send-usdc-tx-explorer-link"
             >
               View on {CHAIN_NAMES[txChainId]} Explorer
             </a>
