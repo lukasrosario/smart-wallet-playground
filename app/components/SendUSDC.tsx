@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useWallet } from '../context/WalletContext';
 import { encodeFunctionData, erc20Abi, isAddress, parseUnits } from 'viem';
 import { Switch } from './Switch';
+import { usePollCallsStatus } from '../hooks/usePollCallsStatus';
 
 const VITALIK_ADDRESS = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045' as const;
 
@@ -25,12 +26,31 @@ const CHAIN_NAMES = {
   '0x14a34': 'Base Sepolia',
 } as const;
 
+const CHAIN_TO_EXPLORER = {
+  '0xa': 'https://optimistic.etherscan.io',
+  '0x2105': 'https://basescan.org',
+  '0xaa36a7': 'https://sepolia.etherscan.io',
+  '0x14a34': 'https://sepolia.basescan.org',
+} as const;
+
 export function SendUSDC() {
   const { provider, addLog, currentChain, connectedAddress } = useWallet();
   const [toAddress, setToAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const [useSendCalls, setUseSendCalls] = useState(true);
+  const [callsId, setCallsId] = useState<string>('');
   const [isSponsored, setIsSponsored] = useState(false);
+  const [txHash, setTxHash] = useState<string>('');
+  const [txChainId, setTxChainId] = useState<keyof typeof CHAIN_TO_USDC_ADDRESS | null>(null);
+  const { data: callsStatus } = usePollCallsStatus({ callsId });
+
+  useEffect(() => {
+    if (callsStatus?.status === 'CONFIRMED') {
+      setTxHash(callsStatus.receipts[0].transactionHash);
+    } else {
+      setTxHash('');
+    }
+  }, [callsStatus]);
 
   useEffect(() => {
     // USDC sends are always sponsored on Base
@@ -48,10 +68,11 @@ export function SendUSDC() {
       if (isDisabled) return;
 
       const usdcAddress = CHAIN_TO_USDC_ADDRESS[chainId];
+      setTxChainId(chainId);
 
       try {
         if (useSendCalls) {
-          await provider?.request({
+          const id = (await provider?.request({
             method: 'wallet_sendCalls',
             params: [
               {
@@ -70,7 +91,8 @@ export function SendUSDC() {
                 ],
               },
             ],
-          });
+          })) as string;
+          setCallsId(id);
         } else {
           const data = encodeFunctionData({
             abi: erc20Abi,
@@ -177,6 +199,19 @@ export function SendUSDC() {
               Send on {name}
             </button>
           ))}
+        </div>
+
+        <div className="h-6 text-center">
+          {txHash && txChainId && (
+            <a
+              href={`${CHAIN_TO_EXPLORER[txChainId]}/tx/${txHash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:text-blue-300 text-sm font-mono"
+            >
+              View on {CHAIN_NAMES[txChainId]} Explorer
+            </a>
+          )}
         </div>
       </div>
     </div>
