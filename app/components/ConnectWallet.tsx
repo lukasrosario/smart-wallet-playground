@@ -79,7 +79,7 @@ export function ConnectWallet() {
           {connectedAddress && (
             <>
               <h2 className="text-white text-sm font-medium">Connected Address</h2>
-              <p id="connected-address" className="text-white text-center font-mono">
+              <p data-testid="connected-address" className="text-white text-center font-mono">
                 {connectedAddress}
               </p>
               {currentChain && (
