@@ -89,7 +89,7 @@ export function SendUSDC() {
                   },
                 ],
                 capabilities: {
-                  ...(isSponsored
+                  ...(isSponsored && chainId !== '0x2105'
                     ? {
                         paymasterService: {
                           url: `${document.location.origin}/api/paymaster/${encodeURIComponent('Smart Wallet Playground')}`,
