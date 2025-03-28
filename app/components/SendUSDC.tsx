@@ -78,7 +78,6 @@ export function SendUSDC() {
               {
                 version: '1.0',
                 chainId,
-                sponsored: isSponsored,
                 calls: [
                   {
                     to: usdcAddress,
@@ -89,6 +88,15 @@ export function SendUSDC() {
                     }),
                   },
                 ],
+                capabilities: {
+                  ...(isSponsored
+                    ? {
+                        paymasterService: {
+                          url: `${document.location.origin}/api/paymaster/${encodeURIComponent('Smart Wallet Playground')}`,
+                        },
+                      }
+                    : {}),
+                },
               },
             ],
           })) as string;

@@ -17,7 +17,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ spo
     const chainId = req.params[2];
     const paymasterClient = createPaymasterClient(chainId);
     const res = await paymasterClient.getPaymasterData({ ...userOperation, entryPointAddress, chainId });
-    return Response.json({ result: { ...res, sponsor: { name: sponsor } } });
+    return Response.json({ result: { ...res, sponsor: { name: decodeURIComponent(sponsor) } } });
   }
 
   return Response.json({ error: 'Invalid method' }, { status: 400 });
