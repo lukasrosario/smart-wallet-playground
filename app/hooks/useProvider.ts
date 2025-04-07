@@ -40,7 +40,7 @@ export function useProvider({ appName, appLogoUrl, keysUrl }: UseProviderProps =
     const sdk = createCoinbaseWalletSDK({
       preference: {
         options: 'smartWalletOnly',
-        keysUrl: keysUrl === '' ? 'https://keys.coinbase.com/connect' : keysUrl,
+        keysUrl: !keysUrl || keysUrl === '' || !isValidUrl(keysUrl) ? 'https://keys.coinbase.com/connect' : keysUrl,
       },
       appName: appName === '' ? 'Smart Wallet Playground' : appName,
       appLogoUrl: appLogoUrl,
@@ -86,4 +86,13 @@ export function useProvider({ appName, appLogoUrl, keysUrl }: UseProviderProps =
   }, [appName, appLogoUrl, keysUrl, addLog]);
 
   return { provider, eventLogs, addLog, clearLogs, currentChain, connectedAddress, setConnectedAddress };
+}
+
+function isValidUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
 }
