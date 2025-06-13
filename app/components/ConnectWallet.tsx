@@ -1,74 +1,84 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useWallet } from '../context/WalletContext';
+import { useCallback } from 'react';
+import { useWallet } from '../context/WAGMIContext';
+import { useConnect, useDisconnect, useAccount, useChainId } from 'wagmi';
+import { useHydration } from '../hooks/useHydration';
 
 export function ConnectWallet() {
-  const { provider, addLog, connectedAddress, setConnectedAddress } = useWallet();
-  const [currentChain, setCurrentChain] = useState<string | undefined>(undefined);
+  const { addLog } = useWallet();
+  const { connectors, connect: wagmiConnect, isPending: isConnecting } = useConnect();
+  const { disconnect: wagmiDisconnect } = useDisconnect();
+  const { address: connectedAddress, isConnected } = useAccount();
+  const chainId = useChainId();
+  const isHydrated = useHydration();
 
-  const updateChainId = useCallback(async () => {
-    try {
-      const chainId = (await provider?.request({ method: 'eth_chainId' })) as string;
-      setCurrentChain(chainId);
-    } catch (error) {
-      addLog({
-        type: 'error',
-        data: error,
-      });
-    }
-  }, [provider, addLog]);
-
-  useEffect(() => {
-    if (provider && connectedAddress) {
-      updateChainId();
-    } else {
-      setCurrentChain(undefined);
-    }
-  }, [provider, connectedAddress, updateChainId]);
-
-  useEffect(() => {
-    if (provider) {
-      provider.on('chainChanged', (chainId: string) => {
-        setCurrentChain(chainId);
-      });
-    }
-  }, [provider]);
+  // Safe display states to prevent hydration mismatch
+  const displayIsConnected = isHydrated && isConnected;
+  const displayIsConnecting = isHydrated && isConnecting;
+  const displayConnectedAddress = isHydrated ? connectedAddress : undefined;
+  const currentChain = chainId ? `0x${chainId.toString(16)}` : undefined;
 
   const connect = useCallback(async () => {
     try {
-      const accounts = (await provider?.request({ method: 'eth_requestAccounts' })) as `0x${string}`[];
-      setConnectedAddress(accounts[0]);
+      if (connectors.length > 0) {
+        // Use the first connector (Coinbase Wallet by default from our config)
+        const connector = connectors[0];
+        wagmiConnect({ connector });
+        addLog({
+          type: 'message',
+          data: `Connecting with ${connector.name}...`,
+        });
+      }
     } catch (error) {
       addLog({
         type: 'error',
         data: error,
       });
     }
-  }, [provider, addLog]);
+  }, [connectors, wagmiConnect, addLog]);
 
   const disconnect = useCallback(async () => {
     try {
-      await provider?.disconnect();
-      setConnectedAddress(undefined);
+      wagmiDisconnect();
+      addLog({
+        type: 'message',
+        data: 'Disconnecting wallet...',
+      });
     } catch (error) {
       addLog({
         type: 'error',
         data: error,
       });
     }
-  }, [provider, setConnectedAddress, addLog]);
+  }, [wagmiDisconnect, addLog]);
 
   return (
     <>
       <div className="flex flex-row space-x-4 self-center">
         <button
           onClick={connect}
-          className="w-36 py-2 bg-slate-800 text-white rounded-md border border-slate-600 hover:bg-slate-700 cursor-pointer"
+          disabled={displayIsConnecting || displayIsConnected}
+          className={`w-36 py-2 rounded-md border text-white ${
+            displayIsConnecting || displayIsConnected
+              ? 'bg-slate-600 border-slate-500 cursor-not-allowed'
+              : 'bg-slate-800 border-slate-600 hover:bg-slate-700 cursor-pointer'
+          }`}
         >
-          Connect
+          {!isHydrated
+            ? 'Loading...'
+            : displayIsConnecting
+              ? 'Connecting...'
+              : displayIsConnected
+                ? 'Connected'
+                : 'Connect'}
         </button>
         <button
           onClick={disconnect}
-          className="w-36 py-2 bg-slate-800 text-white rounded-md border border-slate-600 hover:bg-slate-700 cursor-pointer"
+          disabled={!displayIsConnected}
+          className={`w-36 py-2 rounded-md border text-white ${
+            !displayIsConnected
+              ? 'bg-slate-600 border-slate-500 cursor-not-allowed'
+              : 'bg-slate-800 border-slate-600 hover:bg-slate-700 cursor-pointer'
+          }`}
         >
           Disconnect
         </button>
@@ -76,11 +86,11 @@ export function ConnectWallet() {
 
       <div className="flex flex-col justify-center bg-slate-800 rounded-md p-4 w-full max-w-xl mx-auto h-24">
         <div className="flex flex-col items-center space-y-2">
-          {connectedAddress && (
+          {displayConnectedAddress && displayIsConnected && (
             <>
               <h2 className="text-white text-sm font-medium">Connected Address</h2>
               <p data-testid="connected-address" className="text-white text-center font-mono">
-                {connectedAddress}
+                {displayConnectedAddress}
               </p>
               {currentChain && (
                 <div className="flex justify-center w-full">
@@ -92,7 +102,11 @@ export function ConnectWallet() {
               )}
             </>
           )}
-          {!connectedAddress && <p className="text-white text-center font-mono">No wallet connected</p>}
+          {!displayIsConnected && (
+            <p className="text-white text-center font-mono">
+              {!isHydrated ? 'Loading...' : displayIsConnecting ? 'Connecting...' : 'No wallet connected'}
+            </p>
+          )}
         </div>
       </div>
     </>
