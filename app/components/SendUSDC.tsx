@@ -44,14 +44,14 @@ const CHAIN_TO_EXPLORER = {
 } as const;
 
 export function SendUSDC() {
-  const { addLog, currentChain, connectedAddress, isConnected } = useWallet();
+  const { addLog, isConnected } = useWallet();
   const currentChainId = useChainId();
   const { switchChain } = useSwitchChain();
   const isHydrated = useHydration();
 
   // WAGMI hooks for contract interaction
   const { writeContract, data: hash, isPending: isWritePending, error: writeError } = useWriteContract();
-  const { sendCalls, data: wagmiCallsId, isPending: isSendingCalls, error: sendCallsError } = useSendCalls();
+  const { sendCalls, data: wagmiCallsId, error: sendCallsError } = useSendCalls();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
 
@@ -426,7 +426,7 @@ export function SendUSDC() {
         </div>
 
         <div className="grid grid-cols-2 gap-2">
-          {Object.entries(CHAIN_NAMES).map(([chainId, name]) => (
+          {Object.entries(CHAIN_NAMES).map(([chainId]) => (
             <button
               key={chainId}
               onClick={() => sendUSDC(Number(chainId) as keyof typeof CHAIN_TO_USDC_ADDRESS)}

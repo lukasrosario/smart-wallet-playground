@@ -81,7 +81,7 @@ export function AppPaymaster() {
         data: `Sponsored transaction failed: ${error instanceof Error ? error.message : String(error)}`,
       });
     }
-  }, [currentChainId, sponsor, addLog, currentChainSupported, sendCalls]);
+  }, [sponsor, addLog, currentChainSupported, sendCalls]);
 
   const getButtonText = () => {
     if (!isHydrated) return 'Loading...';
