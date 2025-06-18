@@ -23,23 +23,23 @@ const AMOUNT_SHORTCUTS = {
 
 // Updated to use numeric chain IDs for WAGMI
 const CHAIN_TO_USDC_ADDRESS = {
-  10: '0x0b2c639c533813f4aa9d7837caf62653d097ff85', // Optimism
+  // 10: '0x0b2c639c533813f4aa9d7837caf62653d097ff85', // Optimism
   8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // Base
-  11155111: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', // Sepolia
+  // 11155111: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', // Sepolia
   84532: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // Base Sepolia
 } as const;
 
 const CHAIN_NAMES = {
-  10: 'Optimism',
+  // 10: 'Optimism',
   8453: 'Base',
-  11155111: 'Sepolia',
+  // 11155111: 'Sepolia',
   84532: 'Base Sepolia',
 } as const;
 
 const CHAIN_TO_EXPLORER = {
-  10: 'https://optimistic.etherscan.io',
+  // 10: 'https://optimistic.etherscan.io',
   8453: 'https://basescan.org',
-  11155111: 'https://sepolia.etherscan.io',
+  // 11155111: 'https://sepolia.etherscan.io',
   84532: 'https://sepolia.basescan.org',
 } as const;
 
@@ -66,8 +66,8 @@ export function SendUSDC() {
   const { data: callsStatus } = useCallsStatus({ id: activeCallsId });
 
   useEffect(() => {
-    // USDC sends can be sponsored on supported chains (Optimism, Base, Base Sepolia, Sepolia)
-    const supportsPaymaster = [10, 8453, 84532, 11155111].includes(currentChainId);
+    // USDC sends can be sponsored on supported chains (Base, Base Sepolia)
+    const supportsPaymaster = [8453, 84532].includes(currentChainId);
     setIsSponsored(supportsPaymaster);
   }, [currentChainId]);
 
@@ -192,8 +192,8 @@ export function SendUSDC() {
           args: [toAddress as `0x${string}`, parseUnits(amount, 6)],
         });
 
-        // Paymaster is supported on: Optimism (10), Base (8453), Base Sepolia (84532), Sepolia (11155111)
-        const supportsPaymaster = [10, 8453, 84532, 11155111].includes(chainId);
+        // Paymaster is supported on: Base (8453), Base Sepolia (84532)
+        const supportsPaymaster = [8453, 84532].includes(chainId);
 
         if (isSponsored && !supportsPaymaster) {
           addLog({
@@ -218,6 +218,19 @@ export function SendUSDC() {
             type: 'message',
             data: `Using paymaster service for chain ${chainId} (${CHAIN_NAMES[chainId]})`,
           });
+          addLog({
+            type: 'message',
+            data: `Paymaster URL: ${document.location.origin}/api/paymaster/${encodeURIComponent('Smart Wallet Playground')}`,
+          });
+          addLog({
+            type: 'message',
+            data: `Chain ID: ${chainId}, Supports paymaster: ${supportsPaymaster}`,
+          });
+          console.log('SendCalls capabilities:', capabilities);
+          console.log('Current WAGMI chain ID (decimal):', currentChainId);
+          console.log('Current WAGMI chain ID (hex):', `0x${currentChainId.toString(16)}`);
+          console.log('Target chain ID (decimal):', chainId);
+          console.log('Target chain ID (hex):', `0x${chainId.toString(16)}`);
         }
 
         addLog({
@@ -345,12 +358,12 @@ export function SendUSDC() {
                   type="checkbox"
                   checked={isSponsored}
                   onChange={(e) => setIsSponsored(e.target.checked)}
-                  disabled={!displayCurrentChainId || ![10, 8453, 84532, 11155111].includes(displayCurrentChainId)}
+                  disabled={!displayCurrentChainId || ![8453, 84532].includes(displayCurrentChainId)}
                   className="rounded bg-slate-700 border-slate-600 text-blue-600 focus:ring-blue-600 focus:ring-offset-0"
                 />
                 <span className="text-white text-sm">
                   Sponsored
-                  {!displayCurrentChainId || ![10, 8453, 84532, 11155111].includes(displayCurrentChainId)
+                  {!displayCurrentChainId || ![8453, 84532].includes(displayCurrentChainId)
                     ? ' (Not available)'
                     : ' (Requires env variables)'}
                 </span>

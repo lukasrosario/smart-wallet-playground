@@ -4,9 +4,9 @@ import { useWallet } from '../context/WAGMIContext';
 import { useHydration } from '../hooks/useHydration';
 
 const CHAIN_SHORTCUTS = {
-  Optimism: 10,
+  // Optimism: 10,
   Base: 8453,
-  Sepolia: 11155111,
+  // Sepolia: 11155111,
   'Base Sepolia': 84532,
 } as const;
 
