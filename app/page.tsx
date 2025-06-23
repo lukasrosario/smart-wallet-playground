@@ -4,7 +4,7 @@ import { ConnectWallet } from './components/ConnectWallet';
 import { EventLog } from './components/EventLog';
 import { SDKConfig } from './components/SDKConfig';
 import { ChainConfig } from './components/ChainConfig';
-import { WAGMIProvider } from './context/WAGMIContext';
+import { WAGMIProvider } from './context/WagmiContextProvider';
 import { ConfigProvider } from './context/ConfigContext';
 import { SendUSDC } from './components/SendUSDC';
 import { SendETH } from './components/SendETH';

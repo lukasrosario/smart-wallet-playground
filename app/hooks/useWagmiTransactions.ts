@@ -11,7 +11,7 @@ import {
   useBalance,
 } from 'wagmi';
 import { parseEther, parseUnits, formatEther } from 'viem';
-import { useWallet } from '../context/WAGMIContext';
+import { useWallet } from '../context/WagmiContextProvider';
 
 // USDC contract addresses for different chains
 export const USDC_ADDRESSES = {

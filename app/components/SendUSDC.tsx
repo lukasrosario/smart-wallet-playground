@@ -7,7 +7,7 @@ import {
   useCallsStatus,
   useSendCalls,
 } from 'wagmi';
-import { useWallet } from '../context/WAGMIContext';
+import { useWallet } from '../context/WagmiContextProvider';
 import { encodeFunctionData, erc20Abi, isAddress, parseUnits } from 'viem';
 import { Switch } from './Switch';
 

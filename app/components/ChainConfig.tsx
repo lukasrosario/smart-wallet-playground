@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useSwitchChain, useChainId } from 'wagmi';
-import { useWallet } from '../context/WAGMIContext';
+import { useWallet } from '../context/WagmiContextProvider';
 import { useHydration } from '../hooks/useHydration';
 
 const CHAIN_SHORTCUTS = {
@@ -50,6 +50,7 @@ export function ChainConfig() {
   const handleCustomChainSwitch = useCallback(() => {
     if (!customChainId) return;
 
+    // Parse chain ID from user input - supports both hex (0x2105) and decimal (8453) formats
     const chainId = customChainId.startsWith('0x') ? parseInt(customChainId, 16) : parseInt(customChainId, 10);
 
     if (isNaN(chainId)) {

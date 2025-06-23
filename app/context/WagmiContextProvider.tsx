@@ -5,7 +5,6 @@ import { WagmiProvider, useAccount } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { wagmiConfig } from '../config/wagmi';
 
-// Event logging types (compatible with existing EventLog)
 export type EventLog = {
   type: 'connect' | 'disconnect' | 'accountsChanged' | 'chainChanged' | 'message' | 'error';
   timestamp: number;

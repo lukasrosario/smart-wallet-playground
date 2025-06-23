@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect, useMemo } from 'react';
 import { useChainId, useSendCalls } from 'wagmi';
-import { useWallet } from '../context/WAGMIContext';
+import { useWallet } from '../context/WagmiContextProvider';
 import { useHydration } from '../hooks/useHydration';
 
 const PAYMASTER_SUPPORTED_CHAINS = {

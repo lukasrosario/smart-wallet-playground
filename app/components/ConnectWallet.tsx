@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useWallet } from '../context/WAGMIContext';
+import { useWallet } from '../context/WagmiContextProvider';
 import { useConnect, useDisconnect, useAccount, useChainId } from 'wagmi';
 import { useHydration } from '../hooks/useHydration';
 

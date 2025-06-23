@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useWallet } from '../context/WAGMIContext';
+import { useWallet } from '../context/WagmiContextProvider';
 
 function getEventTypeColor(type: string) {
   switch (type) {
