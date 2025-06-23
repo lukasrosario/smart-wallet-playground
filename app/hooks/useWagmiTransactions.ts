@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   useSendTransaction,
   useWriteContract,
@@ -18,8 +18,8 @@ export const USDC_ADDRESSES = {
   1: '0xA0b86a33E6441E14d6D7a8e0Bd8a51F8080AE12B', // Mainnet
   8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // Base
   84532: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // Base Sepolia
-  11155111: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', // Sepolia
-  10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85', // Optimism
+  //11155111: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', // Sepolia
+  //10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85', // Optimism
 } as const;
 
 // ERC-20 ABI for USDC transfers
@@ -189,32 +189,54 @@ export function useWagmiTransactions() {
     [walletClient, addLog],
   );
 
-  return {
-    // ETH transactions
-    sendETH,
-    isSendingETH,
-    ethTxHash,
-    ethTxReceipt,
-    isWaitingForETH,
-    ethTxError,
-    ethBalance: ethBalance ? formatEther(ethBalance.value) : '0',
-    refetchEthBalance,
+  return useMemo(
+    () => ({
+      // ETH transactions
+      sendETH,
+      isSendingETH,
+      ethTxHash,
+      ethTxReceipt,
+      isWaitingForETH,
+      ethTxError,
+      ethBalance: ethBalance ? formatEther(ethBalance.value) : '0',
+      refetchEthBalance,
 
-    // USDC transactions
-    sendUSDC,
-    isSendingUSDC,
-    usdcTxHash,
-    usdcTxReceipt,
-    isWaitingForUSDC,
-    usdcTxError,
-    getUSDCBalance,
+      // USDC transactions
+      sendUSDC,
+      isSendingUSDC,
+      usdcTxHash,
+      usdcTxReceipt,
+      isWaitingForUSDC,
+      usdcTxError,
+      getUSDCBalance,
 
-    // Signing
-    signMessage,
+      // Signing
+      signMessage,
 
-    // Utils
-    currentChain: chainId,
-    connectedAddress: address,
-    isConnected: !!address,
-  };
+      // Utils
+      currentChain: chainId,
+      connectedAddress: address,
+      isConnected: !!address,
+    }),
+    [
+      sendETH,
+      isSendingETH,
+      ethTxHash,
+      ethTxReceipt,
+      isWaitingForETH,
+      ethTxError,
+      ethBalance,
+      refetchEthBalance,
+      sendUSDC,
+      isSendingUSDC,
+      usdcTxHash,
+      usdcTxReceipt,
+      isWaitingForUSDC,
+      usdcTxError,
+      getUSDCBalance,
+      signMessage,
+      chainId,
+      address,
+    ],
+  );
 }
