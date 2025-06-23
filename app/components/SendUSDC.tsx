@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import {
   useWriteContract,
   useWaitForTransactionReceipt,
@@ -282,14 +282,14 @@ export function SendUSDC() {
     return `Send on ${CHAIN_NAMES[chainId]}`;
   };
 
-  const getTransactionHash = () => {
+  const getTransactionHash = useMemo(() => {
     if (useSendCallsMode && callsStatus?.status === 'success') {
       return callsStatus.receipts?.[0]?.transactionHash;
     }
     return hash;
-  };
+  }, [useSendCallsMode, callsStatus?.status, callsStatus?.receipts, hash]);
 
-  const getTransactionStatus = () => {
+  const getTransactionStatus = useMemo(() => {
     if (useSendCallsMode) {
       if (callsStatus?.status === 'success') return 'CONFIRMED';
       if (callsStatus?.status === 'failure') return 'FAILED';
@@ -299,7 +299,7 @@ export function SendUSDC() {
     if (isConfirming) return 'CONFIRMING';
     if (isWritePending) return 'PENDING';
     return null;
-  };
+  }, [useSendCallsMode, callsStatus?.status, isConfirmed, isConfirming, isWritePending]);
 
   return (
     <div className="flex flex-col bg-slate-800 rounded-md p-4 justify-between">
@@ -444,10 +444,10 @@ export function SendUSDC() {
 
         {/* Transaction Status */}
         <div className="h-6 text-center">
-          {getTransactionHash() && targetChainId && (
+          {getTransactionHash && targetChainId && (
             <div className="flex flex-col items-center space-y-1">
               <a
-                href={`${CHAIN_TO_EXPLORER[targetChainId]}/tx/${getTransactionHash()}`}
+                href={`${CHAIN_TO_EXPLORER[targetChainId]}/tx/${getTransactionHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-400 hover:text-blue-300 text-sm font-mono"
@@ -456,9 +456,9 @@ export function SendUSDC() {
                 View on {CHAIN_NAMES[targetChainId]} Explorer
               </a>
               <span
-                className={`text-xs ${getTransactionStatus() === 'CONFIRMED' ? 'text-green-400' : 'text-yellow-400'}`}
+                className={`text-xs ${getTransactionStatus === 'CONFIRMED' ? 'text-green-400' : 'text-yellow-400'}`}
               >
-                Status: {getTransactionStatus()}
+                Status: {getTransactionStatus}
               </span>
             </div>
           )}
