@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useMemo } from 'react';
 import { useChainId, useSendCalls } from 'wagmi';
 import { useWallet } from '../context/WAGMIContext';
 import { useHydration } from '../hooks/useHydration';
@@ -83,18 +83,18 @@ export function AppPaymaster() {
     }
   }, [sponsor, addLog, currentChainSupported, sendCalls]);
 
-  const getButtonText = () => {
+  const getButtonText = useMemo(() => {
     if (!isHydrated) return 'Loading...';
     if (!displayIsConnected) return 'Connect Wallet';
     if (!currentChainSupported) return 'Unsupported Chain';
     if (isSendingCalls) return 'Sending...';
     if (callsId) return 'Transaction Submitted';
     return 'Send Transaction';
-  };
+  }, [isHydrated, displayIsConnected, currentChainSupported, isSendingCalls, callsId]);
 
-  const isButtonDisabled = () => {
+  const isButtonDisabled = useMemo(() => {
     return !displayIsConnected || !currentChainSupported || isSendingCalls || !!callsId;
-  };
+  }, [displayIsConnected, currentChainSupported, isSendingCalls, callsId]);
 
   return (
     <div className="flex flex-col bg-slate-800 rounded-md p-4">
@@ -130,14 +130,14 @@ export function AppPaymaster() {
 
         <button
           onClick={sendSponsoredTransaction}
-          disabled={isButtonDisabled()}
+          disabled={isButtonDisabled}
           className={`py-2 px-4 rounded-md border transition-colors ${
-            isButtonDisabled()
+            isButtonDisabled
               ? 'bg-slate-600 text-slate-400 border-slate-500 cursor-not-allowed'
               : 'bg-slate-700 text-white border-slate-600 hover:bg-slate-600 cursor-pointer'
           }`}
         >
-          {getButtonText()}
+          {getButtonText}
         </button>
 
         {/* Transaction Status */}
