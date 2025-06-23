@@ -9,11 +9,11 @@ export type EventLog = {
   type: 'connect' | 'disconnect' | 'accountsChanged' | 'chainChanged' | 'message' | 'error';
   timestamp: number;
   data:
-    | string // For 'message' type
+    | string // For 'message' and 'chainChanged' types
     | Error // For 'error' type
+    | unknown // For 'error' type when error is unknown
     | { chainId: string } // For 'connect' type
     | string[] // For 'accountsChanged' type
-    | string // For 'chainChanged' type
     | { code: number; message: string }; // For 'disconnect' type
 };
 
