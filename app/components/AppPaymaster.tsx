@@ -92,9 +92,7 @@ export function AppPaymaster() {
     return 'Send Transaction';
   }, [isHydrated, displayIsConnected, currentChainSupported, isSendingCalls, callsId]);
 
-  const isButtonDisabled = useMemo(() => {
-    return !displayIsConnected || !currentChainSupported || isSendingCalls || !!callsId;
-  }, [displayIsConnected, currentChainSupported, isSendingCalls, callsId]);
+  const isButtonDisabled = !displayIsConnected || !currentChainSupported || isSendingCalls || !!callsId;
 
   return (
     <div className="flex flex-col bg-slate-800 rounded-md p-4">
