@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
-import { WagmiProvider, useAccount, useDisconnect } from 'wagmi';
+import { WagmiProvider, useAccount } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { wagmiConfig } from '../config/wagmi';
 
@@ -9,7 +9,13 @@ import { wagmiConfig } from '../config/wagmi';
 export type EventLog = {
   type: 'connect' | 'disconnect' | 'accountsChanged' | 'chainChanged' | 'message' | 'error';
   timestamp: number;
-  data: any;
+  data:
+    | string // For 'message' type
+    | Error // For 'error' type
+    | { chainId: string } // For 'connect' type
+    | string[] // For 'accountsChanged' type
+    | string // For 'chainChanged' type
+    | { code: number; message: string }; // For 'disconnect' type
 };
 
 type WAGMIContextType = {
@@ -35,7 +41,6 @@ const queryClient = new QueryClient({
 function WAGMIContextProvider({ children }: { children: React.ReactNode }) {
   const [eventLogs, setEventLogs] = useState<EventLog[]>([]);
   const { address: connectedAddress, chainId } = useAccount();
-  const { disconnect } = useDisconnect();
 
   const addLog = useCallback((log: Omit<EventLog, 'timestamp'>) => {
     setEventLogs((prev) => [...prev, { ...log, timestamp: Date.now() }]);
