@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useCallback, useState, useEffect } from 'react';
+import { createContext, useContext, useCallback, useState, useEffect, useMemo } from 'react';
 import { WagmiProvider, useAccount } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { wagmiConfig } from '../config/wagmi';
@@ -93,14 +93,17 @@ function WAGMIContextProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isConnected, wasConnected, addLog]);
 
-  const value = {
-    isConnected,
-    connectedAddress,
-    currentChain,
-    addLog,
-    clearLogs,
-    eventLogs,
-  };
+  const value = useMemo(
+    () => ({
+      isConnected,
+      connectedAddress,
+      currentChain,
+      addLog,
+      clearLogs,
+      eventLogs,
+    }),
+    [isConnected, connectedAddress, currentChain, addLog, clearLogs, eventLogs],
+  );
 
   return <WAGMIContext.Provider value={value}>{children}</WAGMIContext.Provider>;
 }
