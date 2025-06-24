@@ -10,7 +10,7 @@ import {
   useAccount,
   useBalance,
 } from 'wagmi';
-import { parseEther, parseUnits, formatEther, erc20Abi } from 'viem';
+import { parseEther, parseUnits, formatEther, formatUnits, erc20Abi } from 'viem';
 import { useWallet } from '../context/WagmiContextProvider';
 
 // USDC contract addresses for different chains
@@ -18,8 +18,6 @@ export const USDC_ADDRESSES = {
   1: '0xA0b86a33E6441E14d6D7a8e0Bd8a51F8080AE12B', // Mainnet
   8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // Base
   84532: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // Base Sepolia
-  //11155111: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', // Sepolia
-  //10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85', // Optimism
 } as const;
 
 export function useWagmiTransactions() {
@@ -127,7 +125,7 @@ export function useWagmiTransactions() {
       });
 
       // Format from 6 decimals to human readable
-      return formatEther(balance * BigInt(10 ** 12)); // Convert 6 decimals to 18 decimals for formatEther
+      return formatUnits(balance, 6);
     } catch (error) {
       addLog({
         type: 'error',
