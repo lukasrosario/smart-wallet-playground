@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useCallback, useState, useEffect, useMemo } from 'react';
-import { WagmiProvider, useAccount } from 'wagmi';
+import { WagmiProvider, useAccount, useChainId } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { wagmiConfig } from '../config/wagmi';
 
@@ -17,16 +17,13 @@ export type EventLog = {
     | { code: number; message: string }; // For 'disconnect' type
 };
 
-type WagmiContextType = {
-  isConnected: boolean;
-  connectedAddress: string | undefined;
-  currentChain: string | undefined;
+type LogContextType = {
   addLog: (log: Omit<EventLog, 'timestamp'>) => void;
   clearLogs: () => void;
   eventLogs: EventLog[];
 };
 
-const WAGMIContext = createContext<WagmiContextType | undefined>(undefined);
+const LogContext = createContext<LogContextType | undefined>(undefined);
 
 // Create QueryClient outside component to avoid recreation
 const queryClient = new QueryClient({
@@ -37,9 +34,10 @@ const queryClient = new QueryClient({
   },
 });
 
-function WAGMIContextProvider({ children }: { children: React.ReactNode }) {
+function LogContextProvider({ children }: { children: React.ReactNode }) {
   const [eventLogs, setEventLogs] = useState<EventLog[]>([]);
-  const { address: connectedAddress, chainId } = useAccount();
+  const { address: connectedAddress, isConnected } = useAccount();
+  const chainId = useChainId();
 
   const addLog = useCallback((log: Omit<EventLog, 'timestamp'>) => {
     setEventLogs((prev) => [...prev, { ...log, timestamp: Date.now() }]);
@@ -49,11 +47,10 @@ function WAGMIContextProvider({ children }: { children: React.ReactNode }) {
     setEventLogs([]);
   }, []);
 
-  // Convert chainId to hex string to match legacy format
+  // Convert chainId to hex string for logging
   const currentChain = chainId ? `0x${chainId.toString(16)}` : undefined;
-  const isConnected = !!connectedAddress;
 
-  // Auto-log connection events to match production behavior
+  // Auto-log connection events
   useEffect(() => {
     if (isConnected && connectedAddress && currentChain) {
       addLog({
@@ -77,14 +74,12 @@ function WAGMIContextProvider({ children }: { children: React.ReactNode }) {
     }
   }, [currentChain, isConnected, addLog]);
 
-  // Track previous connection state to log disconnect only once
   const [wasConnected, setWasConnected] = useState(false);
 
   useEffect(() => {
     if (isConnected) {
       setWasConnected(true);
     } else if (wasConnected && !isConnected) {
-      // Only log disconnect if we were previously connected
       addLog({
         type: 'disconnect',
         data: { code: 4900, message: 'User disconnected' },
@@ -95,31 +90,28 @@ function WAGMIContextProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo(
     () => ({
-      isConnected,
-      connectedAddress,
-      currentChain,
       addLog,
       clearLogs,
       eventLogs,
     }),
-    [isConnected, connectedAddress, currentChain, addLog, clearLogs, eventLogs],
+    [addLog, clearLogs, eventLogs],
   );
 
-  return <WAGMIContext.Provider value={value}>{children}</WAGMIContext.Provider>;
+  return <LogContext.Provider value={value}>{children}</LogContext.Provider>;
 }
 
 export function WAGMIProvider({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={wagmiConfig}>
-        <WAGMIContextProvider>{children}</WAGMIContextProvider>
+        <LogContextProvider>{children}</LogContextProvider>
       </WagmiProvider>
     </QueryClientProvider>
   );
 }
 
 export function useWallet() {
-  const context = useContext(WAGMIContext);
+  const context = useContext(LogContext);
   if (context === undefined) {
     throw new Error('useWallet must be used within a WAGMIProvider');
   }

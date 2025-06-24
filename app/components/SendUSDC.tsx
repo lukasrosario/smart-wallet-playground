@@ -6,6 +6,7 @@ import {
   useSwitchChain,
   useCallsStatus,
   useSendCalls,
+  useAccount,
 } from 'wagmi';
 import { useWallet } from '../context/WagmiContextProvider';
 import { encodeFunctionData, erc20Abi, isAddress, parseUnits } from 'viem';
@@ -44,7 +45,8 @@ const CHAIN_TO_EXPLORER = {
 } as const;
 
 export function SendUSDC() {
-  const { addLog, isConnected } = useWallet();
+  const { addLog } = useWallet();
+  const { isConnected } = useAccount();
   const currentChainId = useChainId();
   const { switchChain } = useSwitchChain();
   const isHydrated = useHydration();

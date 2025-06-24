@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect, useMemo } from 'react';
-import { useChainId, useSendCalls } from 'wagmi';
+import { useChainId, useSendCalls, useAccount } from 'wagmi';
 import { useWallet } from '../context/WagmiContextProvider';
 import { useHydration } from '../hooks/useHydration';
 
@@ -11,7 +11,8 @@ const PAYMASTER_SUPPORTED_CHAINS = {
 } as const;
 
 export function AppPaymaster() {
-  const { addLog, isConnected } = useWallet();
+  const { addLog } = useWallet();
+  const { isConnected } = useAccount();
   const currentChainId = useChainId();
   const isHydrated = useHydration();
 
@@ -48,7 +49,7 @@ export function AppPaymaster() {
   }, [sendCallsError, addLog]);
 
   const sendSponsoredTransaction = useCallback(async () => {
-    if (!currentChainSupported) return;
+    if (!displayIsConnected || !currentChainSupported) return;
 
     try {
       addLog({
@@ -81,7 +82,7 @@ export function AppPaymaster() {
         data: `Sponsored transaction failed: ${error instanceof Error ? error.message : String(error)}`,
       });
     }
-  }, [sponsor, addLog, currentChainSupported, sendCalls]);
+  }, [displayIsConnected, sponsor, addLog, currentChainSupported, sendCalls]);
 
   const getButtonText = useMemo(() => {
     if (!isHydrated) return 'Loading...';
