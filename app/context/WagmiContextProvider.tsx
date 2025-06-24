@@ -17,7 +17,7 @@ export type EventLog = {
     | { code: number; message: string }; // For 'disconnect' type
 };
 
-type WAGMIContextType = {
+type WagmiContextType = {
   isConnected: boolean;
   connectedAddress: string | undefined;
   currentChain: string | undefined;
@@ -26,7 +26,7 @@ type WAGMIContextType = {
   eventLogs: EventLog[];
 };
 
-const WAGMIContext = createContext<WAGMIContextType | undefined>(undefined);
+const WAGMIContext = createContext<WagmiContextType | undefined>(undefined);
 
 // Create QueryClient outside component to avoid recreation
 const queryClient = new QueryClient({
