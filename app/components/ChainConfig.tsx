@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useSwitchChain, useChainId } from 'wagmi';
+import { useSwitchChain, useChainId, useAccount } from 'wagmi';
 import { useWallet } from '../context/WagmiContextProvider';
 import { useHydration } from '../hooks/useHydration';
 
@@ -11,7 +11,8 @@ const CHAIN_SHORTCUTS = {
 } as const;
 
 export function ChainConfig() {
-  const { addLog, isConnected } = useWallet();
+  const { addLog } = useWallet();
+  const { isConnected } = useAccount();
   const { switchChain, isPending, error } = useSwitchChain();
   const currentChainId = useChainId();
   const [customChainId, setCustomChainId] = useState<string>('');
@@ -23,13 +24,7 @@ export function ChainConfig() {
 
   const handleSwitchChain = useCallback(
     async (targetChainId: number) => {
-      if (!displayIsConnected) {
-        addLog({
-          type: 'error',
-          data: 'Wallet not connected',
-        });
-        return;
-      }
+      if (!displayIsConnected) return;
 
       try {
         switchChain({ chainId: targetChainId });
@@ -71,7 +66,7 @@ export function ChainConfig() {
       {/* Current Chain Display */}
       {displayIsConnected && displayCurrentChainId && (
         <div className="text-white text-sm mb-4 text-center">
-          {isHydrated ? `Current: ${displayCurrentChainId} (0x${displayCurrentChainId.toString(16)})` : 'Loading...'}
+          Current: {displayCurrentChainId} (0x{displayCurrentChainId.toString(16)})
         </div>
       )}
 
