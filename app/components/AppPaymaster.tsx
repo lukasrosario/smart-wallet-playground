@@ -4,9 +4,7 @@ import { useWallet } from '../context/WagmiContextProvider';
 import { useHydration } from '../hooks/useHydration';
 
 const PAYMASTER_SUPPORTED_CHAINS = {
-  // 10: 'Optimism',
   8453: 'Base',
-  // 11155111: 'Sepolia',
   84532: 'Base Sepolia',
 } as const;
 
