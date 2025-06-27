@@ -261,20 +261,32 @@ export function SendUSDC() {
 
   const sendUSDC = useSendCallsMode ? sendUSDCWithCalls : sendUSDCWithWagmi;
 
-  const getButtonText = (chainId: keyof typeof CHAIN_TO_USDC_ADDRESS) => {
+  const getButtonText = () => {
     if (!isHydrated) return 'Loading...';
-
-    if (useSendCallsMode) {
-      return `Send on ${CHAIN_NAMES[chainId]}`;
+    if (!displayIsConnected) return 'Connect Wallet';
+    if (!displayCurrentChainId || !(displayCurrentChainId in CHAIN_TO_USDC_ADDRESS)) {
+      return 'Unsupported Chain';
     }
 
-    if (displayCurrentChainId !== chainId) {
-      return `Switch to ${CHAIN_NAMES[chainId]}`;
+    if (useSendCallsMode) {
+      return 'Send USDC';
     }
 
     if (isWritePending) return 'Sending...';
     if (isConfirming) return 'Confirming...';
-    return `Send on ${CHAIN_NAMES[chainId]}`;
+    return 'Send USDC';
+  };
+
+  const handleSend = () => {
+    if (!displayCurrentChainId || !(displayCurrentChainId in CHAIN_TO_USDC_ADDRESS)) {
+      addLog({
+        type: 'error',
+        data: `USDC not supported on current chain (${displayCurrentChainId}). Please switch to Base or Base Sepolia.`,
+      });
+      return;
+    }
+
+    sendUSDC(displayCurrentChainId as keyof typeof CHAIN_TO_USDC_ADDRESS);
   };
 
   const getTransactionHash = useMemo(() => {
@@ -420,22 +432,17 @@ export function SendUSDC() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          {Object.entries(CHAIN_NAMES).map(([chainId]) => (
-            <button
-              key={chainId}
-              onClick={() => sendUSDC(Number(chainId) as keyof typeof CHAIN_TO_USDC_ADDRESS)}
-              disabled={isDisabled || isWritePending || isConfirming}
-              className={`py-2 px-4 rounded-md border transition-colors text-sm ${
-                isDisabled || isWritePending || isConfirming
-                  ? 'bg-slate-600 text-slate-400 border-slate-500 cursor-not-allowed'
-                  : 'bg-slate-700 text-white border-slate-600 hover:bg-slate-600 cursor-pointer'
-              }`}
-            >
-              {getButtonText(Number(chainId) as keyof typeof CHAIN_TO_USDC_ADDRESS)}
-            </button>
-          ))}
-        </div>
+        <button
+          onClick={handleSend}
+          disabled={isDisabled || isWritePending || isConfirming}
+          className={`w-full py-2 px-4 rounded-md border transition-colors text-sm ${
+            isDisabled || isWritePending || isConfirming
+              ? 'bg-slate-600 text-slate-400 border-slate-500 cursor-not-allowed'
+              : 'bg-slate-700 text-white border-slate-600 hover:bg-slate-600 cursor-pointer'
+          }`}
+        >
+          {getButtonText()}
+        </button>
 
         {/* Transaction Status */}
         <div className="h-6 text-center">
