@@ -55,7 +55,7 @@ export function Sidebar() {
                     <span className="text-lg mr-3">{feature.icon}</span>
                     {!isCollapsed && (
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium truncate">{feature.title}</div>
+                        <div className="text-sm font-semibold truncate">{feature.title}</div>
                       </div>
                     )}
                   </Link>
