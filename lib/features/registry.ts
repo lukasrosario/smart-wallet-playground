@@ -40,7 +40,7 @@ export const FEATURES: Feature[] = [
   },
   {
     id: 'app-paymaster',
-    title: 'Sponsored Transactions',
+    title: 'App Paymaster',
     route: '/wallet/paymaster',
     icon: '🎫',
     category: 'wallet',
