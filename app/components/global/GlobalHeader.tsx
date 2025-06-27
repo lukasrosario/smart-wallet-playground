@@ -78,12 +78,6 @@ export function GlobalHeader() {
             </div>
           )}
 
-          {/* Connection Status Indicator */}
-          <div className="flex items-center space-x-2">
-            <div className={`w-2 h-2 rounded-full ${displayIsConnected ? 'bg-green-400' : 'bg-red-400'}`} />
-            <span className="text-sm text-slate-300">{displayIsConnected ? 'Connected' : 'Disconnected'}</span>
-          </div>
-
           {/* Connected Address */}
           {displayIsConnected && displayConnectedAddress && (
             <div
