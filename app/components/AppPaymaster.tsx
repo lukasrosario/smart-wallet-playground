@@ -1,17 +1,16 @@
 import { useCallback, useState, useEffect, useMemo } from 'react';
-import { useChainId, useSendCalls } from 'wagmi';
+import { useChainId, useSendCalls, useAccount } from 'wagmi';
 import { useWallet } from '../context/WagmiContextProvider';
 import { useHydration } from '../hooks/useHydration';
 
 const PAYMASTER_SUPPORTED_CHAINS = {
-  // 10: 'Optimism',
   8453: 'Base',
-  // 11155111: 'Sepolia',
   84532: 'Base Sepolia',
 } as const;
 
 export function AppPaymaster() {
-  const { addLog, isConnected } = useWallet();
+  const { addLog } = useWallet();
+  const { isConnected } = useAccount();
   const currentChainId = useChainId();
   const isHydrated = useHydration();
 
@@ -48,12 +47,25 @@ export function AppPaymaster() {
   }, [sendCallsError, addLog]);
 
   const sendSponsoredTransaction = useCallback(async () => {
-    if (!currentChainSupported) return;
+    if (!displayIsConnected || !currentChainSupported) return;
 
     try {
+      const sponsorName = sponsor === '' ? 'Smart Wallet Playground' : sponsor;
+      const paymasterUrl = `${document.location.origin}/api/paymaster/${encodeURIComponent(sponsorName)}`;
+
       addLog({
         type: 'message',
         data: `Sending sponsored empty transaction via WAGMI useSendCalls`,
+      });
+
+      addLog({
+        type: 'message',
+        data: `Using paymaster URL: ${paymasterUrl}`,
+      });
+
+      addLog({
+        type: 'message',
+        data: `Chain ID: ${currentChainId} (0x${currentChainId.toString(16)})`,
       });
 
       sendCalls({
@@ -66,7 +78,7 @@ export function AppPaymaster() {
         ],
         capabilities: {
           paymasterService: {
-            url: `${document.location.origin}/api/paymaster/${encodeURIComponent(sponsor === '' ? 'Smart Wallet Playground' : sponsor)}`,
+            url: paymasterUrl,
           },
         },
       });
@@ -81,7 +93,7 @@ export function AppPaymaster() {
         data: `Sponsored transaction failed: ${error instanceof Error ? error.message : String(error)}`,
       });
     }
-  }, [sponsor, addLog, currentChainSupported, sendCalls]);
+  }, [displayIsConnected, sponsor, addLog, currentChainSupported, sendCalls, currentChainId]);
 
   const getButtonText = useMemo(() => {
     if (!isHydrated) return 'Loading...';
