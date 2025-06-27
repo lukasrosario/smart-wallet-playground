@@ -4,7 +4,6 @@ import { ComponentType } from 'react';
 import { SendETH } from '../../app/components/SendETH';
 import { SendUSDC } from '../../app/components/SendUSDC';
 import { AppPaymaster } from '../../app/components/AppPaymaster';
-import { ChainConfig } from '../../app/components/ChainConfig';
 import { SDKConfig } from '../../app/components/SDKConfig';
 import { EventLog } from '../../app/components/EventLog';
 
@@ -51,22 +50,13 @@ export const FEATURES: Feature[] = [
 
   // Configuration
   {
-    id: 'chain-config',
-    title: 'Chain Configuration',
-    route: '/config/chains',
-    icon: '⛓️',
-    category: 'config',
-    component: ChainConfig,
-    priority: 1,
-  },
-  {
     id: 'sdk-config',
     title: 'SDK Configuration',
     route: '/config/sdk',
     icon: '⚙️',
     category: 'config',
     component: SDKConfig,
-    priority: 2,
+    priority: 1,
   },
 
   // Debugging Tools
@@ -81,32 +71,19 @@ export const FEATURES: Feature[] = [
   },
 ];
 
-// Helper functions for working with features
-export const getFeatureById = (id: string): Feature | undefined => {
-  return FEATURES.find((feature) => feature.id === id);
-};
-
 export const getFeatureByRoute = (route: string): Feature | undefined => {
   return FEATURES.find((feature) => feature.route === route);
 };
 
-export const getFeaturesByCategory = (category: Feature['category']): Feature[] => {
-  return FEATURES.filter((feature) => feature.category === category && feature.enabled !== false).sort(
-    (a, b) => (a.priority || 0) - (b.priority || 0),
-  );
-};
-
-export const getAllEnabledFeatures = (): Feature[] => {
-  return FEATURES.filter((feature) => feature.enabled !== false);
-};
-
 export const getNavigationStructure = () => {
-  const categories = ['wallet', 'config', 'debugging'] as const;
+  const categories = ['config', 'wallet', 'debugging'] as const;
 
   return categories.map((category) => ({
     category,
     displayName: category.charAt(0).toUpperCase() + category.slice(1),
-    features: getFeaturesByCategory(category),
+    features: FEATURES.filter((feature) => feature.category === category && feature.enabled !== false).sort(
+      (a, b) => (a.priority || 0) - (b.priority || 0),
+    ),
   }));
 };
 
