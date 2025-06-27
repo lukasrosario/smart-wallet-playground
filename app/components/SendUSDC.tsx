@@ -22,25 +22,18 @@ const AMOUNT_SHORTCUTS = {
   $1: '1.00',
 } as const;
 
-// Updated to use numeric chain IDs for WAGMI
 const CHAIN_TO_USDC_ADDRESS = {
-  // 10: '0x0b2c639c533813f4aa9d7837caf62653d097ff85', // Optimism
   8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // Base
-  // 11155111: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', // Sepolia
   84532: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // Base Sepolia
 } as const;
 
 const CHAIN_NAMES = {
-  // 10: 'Optimism',
   8453: 'Base',
-  // 11155111: 'Sepolia',
   84532: 'Base Sepolia',
 } as const;
 
 const CHAIN_TO_EXPLORER = {
-  // 10: 'https://optimistic.etherscan.io',
   8453: 'https://basescan.org',
-  // 11155111: 'https://sepolia.etherscan.io',
   84532: 'https://sepolia.basescan.org',
 } as const;
 
