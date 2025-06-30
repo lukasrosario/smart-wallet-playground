@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { useWallet } from '../../context/WagmiContextProvider';
 import { useConnect, useDisconnect, useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { useHydration } from '../../hooks/useHydration';
@@ -26,7 +26,7 @@ export function GlobalHeader() {
   const pathname = usePathname();
 
   // Get current feature info for header title
-  const currentFeature = getFeatureByRoute(pathname);
+  const currentFeature = useMemo(() => getFeatureByRoute(pathname), [pathname]);
   const headerTitle = currentFeature ? `${currentFeature.icon} ${currentFeature.title}` : '🏠 Dashboard';
 
   // Safe display states to prevent hydration mismatch
