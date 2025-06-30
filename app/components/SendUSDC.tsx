@@ -261,7 +261,7 @@ export function SendUSDC() {
 
   const sendUSDC = useSendCallsMode ? sendUSDCWithCalls : sendUSDCWithWagmi;
 
-  const getButtonText = () => {
+  const buttonText = useMemo(() => {
     if (!isHydrated) return 'Loading...';
     if (!displayIsConnected) return 'Connect Wallet';
     if (!displayCurrentChainId || !(displayCurrentChainId in CHAIN_TO_USDC_ADDRESS)) {
@@ -275,7 +275,7 @@ export function SendUSDC() {
     if (isWritePending) return 'Sending...';
     if (isConfirming) return 'Confirming...';
     return 'Send USDC';
-  };
+  }, [isHydrated, displayIsConnected, displayCurrentChainId, useSendCallsMode, isWritePending, isConfirming]);
 
   const handleSend = () => {
     if (!displayCurrentChainId || !(displayCurrentChainId in CHAIN_TO_USDC_ADDRESS)) {
@@ -441,7 +441,7 @@ export function SendUSDC() {
               : 'bg-slate-700 text-white border-slate-600 hover:bg-slate-600 cursor-pointer'
           }`}
         >
-          {getButtonText()}
+          {buttonText}
         </button>
 
         {/* Transaction Status */}
