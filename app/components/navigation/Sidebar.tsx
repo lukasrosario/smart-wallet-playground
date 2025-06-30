@@ -1,13 +1,13 @@
 'use client';
 
 import { getNavigationStructure, CATEGORY_INFO } from '../../../lib/features/registry';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const navigationStructure = getNavigationStructure();
+  const navigationStructure = useMemo(() => getNavigationStructure(), []);
   const pathname = usePathname();
 
   return (
