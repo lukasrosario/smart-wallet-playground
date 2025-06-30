@@ -277,7 +277,7 @@ export function SendUSDC() {
     return 'Send USDC';
   }, [isHydrated, displayIsConnected, displayCurrentChainId, useSendCallsMode, isWritePending, isConfirming]);
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     if (!displayCurrentChainId || !(displayCurrentChainId in CHAIN_TO_USDC_ADDRESS)) {
       addLog({
         type: 'error',
@@ -287,7 +287,7 @@ export function SendUSDC() {
     }
 
     sendUSDC(displayCurrentChainId as keyof typeof CHAIN_TO_USDC_ADDRESS);
-  };
+  }, [displayCurrentChainId, addLog, sendUSDC]);
 
   const getTransactionHash = useMemo(() => {
     if (useSendCallsMode && callsStatus?.status === 'success') {
