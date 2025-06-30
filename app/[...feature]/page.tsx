@@ -4,11 +4,11 @@ import { use } from 'react';
 import { notFound } from 'next/navigation';
 import { getFeatureByRoute } from '../../lib/features/registry';
 
-interface FeaturePageProps {
+type FeaturePageProps = {
   params: Promise<{
     feature: string[];
   }>;
-}
+};
 
 export default function FeaturePage({ params }: FeaturePageProps) {
   const resolvedParams = use(params);
