@@ -50,7 +50,7 @@ export function AppPaymaster() {
     if (!displayIsConnected || !currentChainSupported) return;
 
     try {
-      const sponsorName = sponsor === '' ? 'Smart Wallet Playground' : sponsor;
+      const sponsorName = !sponsor ? 'Smart Wallet Playground' : sponsor;
       const paymasterUrl = `${document.location.origin}/api/paymaster/${encodeURIComponent(sponsorName)}`;
 
       addLog({
