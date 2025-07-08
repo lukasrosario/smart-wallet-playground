@@ -22,25 +22,18 @@ const AMOUNT_SHORTCUTS = {
   $1: '1.00',
 } as const;
 
-// Updated to use numeric chain IDs for WAGMI
 const CHAIN_TO_USDC_ADDRESS = {
-  // 10: '0x0b2c639c533813f4aa9d7837caf62653d097ff85', // Optimism
   8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // Base
-  // 11155111: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', // Sepolia
   84532: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // Base Sepolia
 } as const;
 
 const CHAIN_NAMES = {
-  // 10: 'Optimism',
   8453: 'Base',
-  // 11155111: 'Sepolia',
   84532: 'Base Sepolia',
 } as const;
 
 const CHAIN_TO_EXPLORER = {
-  // 10: 'https://optimistic.etherscan.io',
   8453: 'https://basescan.org',
-  // 11155111: 'https://sepolia.etherscan.io',
   84532: 'https://sepolia.basescan.org',
 } as const;
 
@@ -268,21 +261,33 @@ export function SendUSDC() {
 
   const sendUSDC = useSendCallsMode ? sendUSDCWithCalls : sendUSDCWithWagmi;
 
-  const getButtonText = (chainId: keyof typeof CHAIN_TO_USDC_ADDRESS) => {
+  const buttonText = useMemo(() => {
     if (!isHydrated) return 'Loading...';
-
-    if (useSendCallsMode) {
-      return `Send on ${CHAIN_NAMES[chainId]}`;
+    if (!displayIsConnected) return 'Connect Wallet';
+    if (!displayCurrentChainId || !(displayCurrentChainId in CHAIN_TO_USDC_ADDRESS)) {
+      return 'Unsupported Chain';
     }
 
-    if (displayCurrentChainId !== chainId) {
-      return `Switch to ${CHAIN_NAMES[chainId]}`;
+    if (useSendCallsMode) {
+      return 'Send USDC';
     }
 
     if (isWritePending) return 'Sending...';
     if (isConfirming) return 'Confirming...';
-    return `Send on ${CHAIN_NAMES[chainId]}`;
-  };
+    return 'Send USDC';
+  }, [isHydrated, displayIsConnected, displayCurrentChainId, useSendCallsMode, isWritePending, isConfirming]);
+
+  const handleSend = useCallback(() => {
+    if (!displayCurrentChainId || !(displayCurrentChainId in CHAIN_TO_USDC_ADDRESS)) {
+      addLog({
+        type: 'error',
+        data: `USDC not supported on current chain (${displayCurrentChainId}). Please switch to Base or Base Sepolia.`,
+      });
+      return;
+    }
+
+    sendUSDC(displayCurrentChainId as keyof typeof CHAIN_TO_USDC_ADDRESS);
+  }, [displayCurrentChainId, addLog, sendUSDC]);
 
   const getTransactionHash = useMemo(() => {
     if (useSendCallsMode && callsStatus?.status === 'success') {
@@ -427,22 +432,17 @@ export function SendUSDC() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          {Object.entries(CHAIN_NAMES).map(([chainId]) => (
-            <button
-              key={chainId}
-              onClick={() => sendUSDC(Number(chainId) as keyof typeof CHAIN_TO_USDC_ADDRESS)}
-              disabled={isDisabled || isWritePending || isConfirming}
-              className={`py-2 px-4 rounded-md border transition-colors text-sm ${
-                isDisabled || isWritePending || isConfirming
-                  ? 'bg-slate-600 text-slate-400 border-slate-500 cursor-not-allowed'
-                  : 'bg-slate-700 text-white border-slate-600 hover:bg-slate-600 cursor-pointer'
-              }`}
-            >
-              {getButtonText(Number(chainId) as keyof typeof CHAIN_TO_USDC_ADDRESS)}
-            </button>
-          ))}
-        </div>
+        <button
+          onClick={handleSend}
+          disabled={isDisabled || isWritePending || isConfirming}
+          className={`w-full py-2 px-4 rounded-md border transition-colors text-sm ${
+            isDisabled || isWritePending || isConfirming
+              ? 'bg-slate-600 text-slate-400 border-slate-500 cursor-not-allowed'
+              : 'bg-slate-700 text-white border-slate-600 hover:bg-slate-600 cursor-pointer'
+          }`}
+        >
+          {buttonText}
+        </button>
 
         {/* Transaction Status */}
         <div className="h-6 text-center">

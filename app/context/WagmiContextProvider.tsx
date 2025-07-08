@@ -3,7 +3,8 @@
 import { createContext, useContext, useCallback, useState, useEffect, useMemo } from 'react';
 import { WagmiProvider, useAccount, useChainId } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { wagmiConfig } from '../config/wagmi';
+import { createWagmiConfig } from '../config/wagmi';
+import { useConfig } from './ConfigContext';
 
 export type EventLog = {
   type: 'connect' | 'disconnect' | 'accountsChanged' | 'chainChanged' | 'message' | 'error';
@@ -101,6 +102,15 @@ function LogContextProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function WAGMIProvider({ children }: { children: React.ReactNode }) {
+  const { appName, appLogoUrl, keysUrl } = useConfig();
+
+  // Recreate config when any parameter changes
+  // This will cause reconnection, but it's the only way to update connector metadata
+  const wagmiConfig = useMemo(() => {
+    console.log('Creating WAGMI config with:', { appName, appLogoUrl, keysUrl });
+    return createWagmiConfig({ appName, appLogoUrl, keysUrl });
+  }, [appName, appLogoUrl, keysUrl]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={wagmiConfig}>
