@@ -20,6 +20,7 @@ export function Sidebar() {
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="p-2 rounded-xl hover:bg-gray-900/50 text-gray-400 hover:text-white transition-all cursor-pointer hidden lg:block"
+
           aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {isCollapsed ? '→' : '←'}
