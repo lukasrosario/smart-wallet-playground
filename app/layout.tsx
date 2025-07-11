@@ -1,20 +1,10 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Sidebar } from './components/navigation/Sidebar';
-import { GlobalHeader } from './components/global/GlobalHeader';
 import { WAGMIProvider } from './context/WagmiContextProvider';
 import { ConfigProvider } from './context/ConfigContext';
+import { GlobalHeader } from './components/global/GlobalHeader';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
 
 export const metadata: Metadata = {
   title: 'Smart Wallet Playground',
@@ -31,20 +21,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-900 text-white`}>
+      <body className="antialiased bg-black text-white">
         <ConfigProvider>
           <WAGMIProvider>
-            <div className="flex h-screen overflow-hidden">
+            <div className="flex h-screen overflow-hidden relative">
               {/* Sidebar */}
               <Sidebar />
 
               {/* Main Content Area */}
-              <div className="flex-1 flex flex-col overflow-hidden">
-                {/* Global Header */}
-                <GlobalHeader />
-
+              <div className="flex-1 flex flex-col overflow-hidden relative lg:ml-0">
                 {/* Page Content */}
-                <main className="flex-1 overflow-auto p-6">{children}</main>
+                <main className="flex-1 overflow-auto">{children}</main>
+
+                {/* Floating Global Header */}
+                <GlobalHeader />
               </div>
             </div>
           </WAGMIProvider>
