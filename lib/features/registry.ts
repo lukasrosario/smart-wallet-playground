@@ -1,4 +1,16 @@
 import { ComponentType } from 'react';
+import {
+  Wallet,
+  DollarSign,
+  PenTool,
+  Ticket,
+  Settings,
+  ClipboardList,
+  WalletCards,
+  Cog,
+  Bug,
+  TestTube,
+} from 'lucide-react';
 
 // Import all feature components
 import { SendETH } from '../../app/components/SendETH';
@@ -6,17 +18,18 @@ import { SendUSDC } from '../../app/components/SendUSDC';
 import { AppPaymaster } from '../../app/components/AppPaymaster';
 import { SDKConfig } from '../../app/components/SDKConfig';
 import { EventLog } from '../../app/components/EventLog';
+import { P0Calls } from '../../app/components/P0Calls';
 
-export interface Feature {
+export type Feature = {
   id: string;
   title: string;
   route: string;
-  icon: string;
+  icon: ComponentType<{ className?: string }>;
   category: 'wallet' | 'config' | 'testing' | 'debugging';
   component: ComponentType;
   enabled?: boolean;
   priority?: number; // For ordering within categories
-}
+};
 
 export const FEATURES: Feature[] = [
   // Wallet Operations
@@ -24,7 +37,7 @@ export const FEATURES: Feature[] = [
     id: 'send-eth',
     title: 'Send ETH',
     route: '/wallet/send-eth',
-    icon: '💰',
+    icon: Wallet,
     category: 'wallet',
     component: SendETH,
     priority: 1,
@@ -33,19 +46,28 @@ export const FEATURES: Feature[] = [
     id: 'send-usdc',
     title: 'Send USDC',
     route: '/wallet/send-usdc',
-    icon: '💵',
+    icon: DollarSign,
     category: 'wallet',
     component: SendUSDC,
     priority: 2,
   },
   {
+    id: 'p0-calls',
+    title: 'P0 Calls',
+    route: '/wallet/p0-calls',
+    icon: PenTool,
+    category: 'wallet',
+    component: P0Calls,
+    priority: 3,
+  },
+  {
     id: 'app-paymaster',
     title: 'App Paymaster',
     route: '/wallet/paymaster',
-    icon: '🎫',
+    icon: Ticket,
     category: 'wallet',
     component: AppPaymaster,
-    priority: 3,
+    priority: 4,
   },
 
   // Configuration
@@ -53,7 +75,7 @@ export const FEATURES: Feature[] = [
     id: 'sdk-config',
     title: 'SDK Configuration',
     route: '/config/sdk',
-    icon: '⚙️',
+    icon: Settings,
     category: 'config',
     component: SDKConfig,
     priority: 1,
@@ -64,7 +86,7 @@ export const FEATURES: Feature[] = [
     id: 'event-log',
     title: 'Event Log',
     route: '/debug/events',
-    icon: '📋',
+    icon: ClipboardList,
     category: 'debugging',
     component: EventLog,
     priority: 1,
@@ -91,18 +113,18 @@ export const getNavigationStructure = () => {
 export const CATEGORY_INFO = {
   wallet: {
     title: 'Wallet Operations',
-    icon: '👛',
+    icon: WalletCards,
   },
   config: {
     title: 'Configuration',
-    icon: '⚙️',
+    icon: Cog,
   },
   testing: {
     title: 'Testing Tools',
-    icon: '🧪',
+    icon: TestTube,
   },
   debugging: {
     title: 'Debugging',
-    icon: '🐛',
+    icon: Bug,
   },
 } as const;
