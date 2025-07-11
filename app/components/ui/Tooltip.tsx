@@ -67,7 +67,7 @@ export function useTooltip(options: TooltipOptions = {}) {
             id={tooltip.id}
             role="tooltip"
             aria-hidden="false"
-            className="fixed px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-2xl z-[9999] whitespace-nowrap pointer-events-none"
+            className="fixed px-3 py-2 bg-white rounded-lg shadow-2xl z-[9999] whitespace-nowrap pointer-events-none"
             style={{
               left: tooltip.x,
               top: tooltip.y,
