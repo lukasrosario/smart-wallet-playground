@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { useWallet } from '../../context/WagmiContextProvider';
 import { useConnect, useDisconnect, useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { useHydration } from '../../hooks/useHydration';
+import { Copy } from 'lucide-react';
 
 const CHAIN_SHORTCUTS = {
   Base: 8453,
@@ -106,7 +107,7 @@ export function GlobalHeader() {
         {/* Connected Address */}
         {displayIsConnected && displayConnectedAddress && (
           <div
-            className="px-4 py-3 bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-2xl cursor-pointer hover:from-gray-800 hover:to-gray-900 transition-all group relative shadow-lg backdrop-blur-sm"
+            className="flex items-center space-x-2 cursor-pointer transition-colors group"
             onClick={() => {
               navigator.clipboard.writeText(displayConnectedAddress);
               setShowCopiedToast(true);
@@ -114,11 +115,10 @@ export function GlobalHeader() {
             }}
             title={`Click to copy: ${displayConnectedAddress}`}
           >
-            <span className="text-sm font-mono text-white group-hover:text-blue-300 transition-colors">
+            <span className="text-sm font-mono text-white group-hover:text-blue-500 transition-colors">
               {displayConnectedAddress.slice(0, 6)}...{displayConnectedAddress.slice(-4)}
             </span>
-
-            <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity text-xs">📋</span>
+            <Copy className="w-4 h-4 text-white group-hover:text-blue-500 transition-colors" />
           </div>
         )}
 
