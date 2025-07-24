@@ -10,7 +10,7 @@ import {
 } from 'wagmi';
 import { useWallet } from '../context/WagmiContextProvider';
 import { encodeFunctionData, erc20Abi, isAddress, parseUnits } from 'viem';
-import { Switch } from './Switch';
+import { Switch } from './ui/Switch';
 import { Button } from './ui/Button';
 import { ConnectWalletPrompt } from './ui/ConnectWalletPrompt';
 import { FeatureLayout } from './ui/FeatureLayout';
