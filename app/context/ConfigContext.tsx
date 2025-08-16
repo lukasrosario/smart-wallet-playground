@@ -5,15 +5,15 @@ import { createContext, useContext, useState, useMemo, useCallback, type ReactNo
 type ConfigContextType = {
   appName: string;
   appLogoUrl: string;
-  keysUrl: string;
+  walletUrl: string;
 
   stagedAppName: string;
   stagedAppLogoUrl: string;
-  stagedKeysUrl: string;
+  stagedWalletUrl: string;
 
   setStagedAppName: (name: string) => void;
   setStagedAppLogoUrl: (url: string) => void;
-  setStagedKeysUrl: (url: string) => void;
+  setStagedWalletUrl: (url: string) => void;
 
   applyChanges: () => void;
 
@@ -29,44 +29,45 @@ type ConfigProviderProps = {
 export function ConfigProvider({ children }: ConfigProviderProps) {
   const [appName, setAppName] = useState('Smart Wallet Playground');
   const [appLogoUrl, setAppLogoUrl] = useState('/favicon.ico');
-  const [keysUrl, setKeysUrl] = useState('https://keys.coinbase.com/connect');
+  const [walletUrl, setWalletUrl] = useState('https://keys.coinbase.com/connect');
 
   const [stagedAppName, setStagedAppName] = useState('Smart Wallet Playground');
   const [stagedAppLogoUrl, setStagedAppLogoUrl] = useState('/favicon.ico');
-  const [stagedKeysUrl, setStagedKeysUrl] = useState('https://keys.coinbase.com/connect');
+  const [stagedWalletUrl, setStagedWalletUrl] = useState('https://keys.coinbase.com/connect');
 
-  const hasPendingChanges = stagedAppName !== appName || stagedAppLogoUrl !== appLogoUrl || stagedKeysUrl !== keysUrl;
+  const hasPendingChanges =
+    stagedAppName !== appName || stagedAppLogoUrl !== appLogoUrl || stagedWalletUrl !== walletUrl;
 
   const applyChanges = useCallback(() => {
     setAppName(stagedAppName);
     setAppLogoUrl(stagedAppLogoUrl);
-    setKeysUrl(stagedKeysUrl);
-  }, [stagedAppName, stagedAppLogoUrl, stagedKeysUrl]);
+    setWalletUrl(stagedWalletUrl);
+  }, [stagedAppName, stagedAppLogoUrl, stagedWalletUrl]);
 
   const contextValue = useMemo(
     () => ({
       appName,
       appLogoUrl,
-      keysUrl,
+      walletUrl,
       stagedAppName,
       stagedAppLogoUrl,
-      stagedKeysUrl,
+      stagedWalletUrl,
       setStagedAppName,
       setStagedAppLogoUrl,
-      setStagedKeysUrl,
+      setStagedWalletUrl,
       applyChanges,
       hasPendingChanges,
     }),
     [
       appName,
       appLogoUrl,
-      keysUrl,
+      walletUrl,
       stagedAppName,
       stagedAppLogoUrl,
-      stagedKeysUrl,
+      stagedWalletUrl,
       setStagedAppName,
       setStagedAppLogoUrl,
-      setStagedKeysUrl,
+      setStagedWalletUrl,
       applyChanges,
       hasPendingChanges,
     ],

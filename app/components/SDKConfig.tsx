@@ -1,10 +1,10 @@
 import { useConfig } from '../context/ConfigContext';
 import { Button } from './ui/Button';
 import { FeatureLayout } from './ui/FeatureLayout';
-import { Switch } from './Switch';
+import { Switch } from './ui/Switch';
 import { Input } from './ui/Input';
 
-const KEYS_URL_SHORTCUTS = {
+const WALLET_URL_SHORTCUTS = {
   'https://keys.coinbase.com': 'https://keys.coinbase.com/connect',
   'http://localhost:3005': 'http://localhost:3005/connect',
 } as const;
@@ -13,10 +13,10 @@ export function SDKConfig() {
   const {
     stagedAppName,
     stagedAppLogoUrl,
-    stagedKeysUrl,
+    stagedWalletUrl,
     setStagedAppName,
     setStagedAppLogoUrl,
-    setStagedKeysUrl,
+    setStagedWalletUrl,
     applyChanges,
     hasPendingChanges,
   } = useConfig();
@@ -42,20 +42,20 @@ export function SDKConfig() {
 
         <div>
           <Input
-            label="Keys URL"
+            label="Wallet URL"
             type="text"
-            value={stagedKeysUrl}
-            onChange={(e) => setStagedKeysUrl(e.target.value)}
+            value={stagedWalletUrl}
+            onChange={(e) => setStagedWalletUrl(e.target.value)}
             placeholder="https://keys.coinbase.com/connect"
           />
           <div className="flex justify-center mt-3 md:mt-4">
             <Switch
-              checked={stagedKeysUrl === KEYS_URL_SHORTCUTS['http://localhost:3005']}
+              checked={stagedWalletUrl === WALLET_URL_SHORTCUTS['http://localhost:3005']}
               onChange={(checked) => {
-                setStagedKeysUrl(
+                setStagedWalletUrl(
                   checked
-                    ? KEYS_URL_SHORTCUTS['http://localhost:3005']
-                    : KEYS_URL_SHORTCUTS['https://keys.coinbase.com'],
+                    ? WALLET_URL_SHORTCUTS['http://localhost:3005']
+                    : WALLET_URL_SHORTCUTS['https://keys.coinbase.com'],
                 );
               }}
               leftLabel="keys.coinbase.com"

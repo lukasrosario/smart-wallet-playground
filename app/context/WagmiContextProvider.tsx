@@ -102,14 +102,14 @@ function LogContextProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function WAGMIProvider({ children }: { children: React.ReactNode }) {
-  const { appName, appLogoUrl, keysUrl } = useConfig();
+  const { appName, appLogoUrl, walletUrl } = useConfig();
 
   // Recreate config when any parameter changes
   // This will cause reconnection, but it's the only way to update connector metadata
   const wagmiConfig = useMemo(() => {
-    console.log('Creating WAGMI config with:', { appName, appLogoUrl, keysUrl });
-    return createWagmiConfig({ appName, appLogoUrl, keysUrl });
-  }, [appName, appLogoUrl, keysUrl]);
+    console.log('Creating WAGMI config with:', { appName, appLogoUrl, walletUrl });
+    return createWagmiConfig({ appName, appLogoUrl, walletUrl });
+  }, [appName, appLogoUrl, walletUrl]);
 
   return (
     <QueryClientProvider client={queryClient}>
