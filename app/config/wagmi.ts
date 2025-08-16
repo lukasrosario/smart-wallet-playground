@@ -1,19 +1,18 @@
 import { createConfig, http, cookieStorage, createStorage } from 'wagmi';
 import { mainnet, base, baseSepolia } from 'wagmi/chains';
-import { coinbaseWallet } from '@wagmi/connectors';
+import { baseAccount } from 'wagmi/connectors';
 
-export function createWagmiConfig(options?: { appName?: string; appLogoUrl?: string; keysUrl?: string }) {
+export function createWagmiConfig(options?: { appName?: string; appLogoUrl?: string; walletUrl?: string }) {
   return createConfig({
     chains: [base, mainnet, baseSepolia],
     connectors: [
-      coinbaseWallet({
+      baseAccount({
         appName: options?.appName || 'Smart Wallet Playground',
         appLogoUrl: options?.appLogoUrl || '/favicon.ico',
         preference: {
           options: 'smartWalletOnly',
-          keysUrl: options?.keysUrl || 'https://keys.coinbase.com/connect',
+          walletUrl: options?.walletUrl || 'https://keys.coinbase.com/connect',
         },
-        version: '4',
       }),
     ],
     ssr: true,
