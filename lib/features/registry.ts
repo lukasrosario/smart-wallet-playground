@@ -1,5 +1,18 @@
 import { ComponentType } from 'react';
-import { Wallet, DollarSign, Ticket, Settings, ClipboardList, WalletCards, Cog, Bug, TestTube } from 'lucide-react';
+import {
+  Wallet,
+  DollarSign,
+  PenTool,
+  Ticket,
+  Settings,
+  ClipboardList,
+  WalletCards,
+  Cog,
+  Bug,
+  TestTube,
+  FileCode,
+  Database,
+} from 'lucide-react';
 
 // Import all feature components
 import { SendETH } from '../../app/components/SendETH';
@@ -7,6 +20,9 @@ import { SendUSDC } from '../../app/components/SendUSDC';
 import { AppPaymaster } from '../../app/components/AppPaymaster';
 import { SDKConfig } from '../../app/components/SDKConfig';
 import { EventLog } from '../../app/components/EventLog';
+import { PersonalSign } from '../../app/components/PersonalSign';
+import { SignTypedData } from '../../app/components/SignTypedData';
+import { DataCallback } from '../../app/components/DataCallback';
 
 export type Feature = {
   id: string;
@@ -40,13 +56,40 @@ export const FEATURES: Feature[] = [
     priority: 2,
   },
   {
+    id: 'personal-sign',
+    title: 'Personal Sign',
+    route: '/wallet/personal-sign',
+    icon: PenTool,
+    category: 'wallet',
+    component: PersonalSign,
+    priority: 3,
+  },
+  {
+    id: 'sign-typed-data',
+    title: 'Sign Typed Data',
+    route: '/wallet/sign-typed-data',
+    icon: FileCode,
+    category: 'wallet',
+    component: SignTypedData,
+    priority: 4,
+  },
+  {
     id: 'app-paymaster',
     title: 'App Paymaster',
     route: '/wallet/paymaster',
     icon: Ticket,
     category: 'wallet',
     component: AppPaymaster,
-    priority: 4,
+    priority: 5,
+  },
+  {
+    id: 'data-callback',
+    title: 'Data Callback',
+    route: '/wallet/data-callback',
+    icon: Database,
+    category: 'wallet',
+    component: DataCallback,
+    priority: 6,
   },
 
   // Configuration

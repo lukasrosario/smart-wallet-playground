@@ -1,7 +1,7 @@
 import { useConfig } from '../context/ConfigContext';
 import { Button } from './ui/Button';
 import { FeatureLayout } from './ui/FeatureLayout';
-import { Switch } from './Switch';
+import { Switch } from './ui/Switch';
 import { Input } from './ui/Input';
 
 const KEYS_URL_SHORTCUTS = {
